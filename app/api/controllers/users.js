@@ -12,6 +12,20 @@ module.exports = {
 
         });
     },
+    getAll: function(req, res, next) {
+        let usersList = [];
+        userModel.find({}, function(err, users){
+            if (err){
+                next(err);
+            } else{
+                for (let user of users) {
+                    usersList.push({email: user.email, password: user.password});
+                }
+                res.json({status:"success", message: "user list found!!!", data:{users: usersList}});
+
+            }
+        });
+    },
     authenticate: function(req, res, next) {
         userModel.findOne({email:req.body.email}, function(err, userInfo){
             if (err) {
