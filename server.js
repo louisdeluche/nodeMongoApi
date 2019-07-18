@@ -1,6 +1,6 @@
 const express = require('express');
 const logger = require('morgan');
-const posts = require('./routes/posts') ;
+const articles = require('./routes/articles') ;
 const users = require('./routes/users');
 const bodyParser = require('body-parser');
 const mongoose = require('./config/database'); //database configuration
@@ -38,8 +38,8 @@ app.get('/', function(req, res){
 // public route
 app.use('/users', users);
 // private route
-// app.use('/posts', validateUser, posts);
-app.use('/posts', posts);
+// app.use('/articles', validateUser, articles);
+app.use('/articles', articles);
 app.get('/favicon.ico', function(req, res) {
     res.sendStatus(204);
 });

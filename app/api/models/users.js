@@ -9,6 +9,16 @@ const UserSchema = new Schema({
         trim: true,
         required: true,
     },
+    lastname: {
+        type: String,
+        trim: true,
+        required: true,
+    },
+    firstname: {
+        type: String,
+        trim: true,
+        required: true,
+    },
     email: {
         type: String,
         trim: true,
@@ -23,9 +33,9 @@ const UserSchema = new Schema({
 // hash user password before saving into database
 
 //TODO: a remettre
-// UserSchema.pre('save', function(next){
-//     this.password = bcrypt.hashSync(this.password, saltRounds);
-//     next();
-// });
+UserSchema.pre('save', function(next){
+    this.password = bcrypt.hashSync(this.password, saltRounds);
+    next();
+});
 
 module.exports = mongoose.model('User', UserSchema);

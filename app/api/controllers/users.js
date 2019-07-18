@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 module.exports = {
     create: function(req, res, next) {
 
-        userModel.create({ name: req.body.name, email: req.body.email, password: req.body.password }, function (err, result) {
+        userModel.create({ name: req.body.name, lastname: req.body.lastname, firstname: req.body.firstname, email: req.body.email, password: req.body.password }, function (err, result) {
             if (err)
                 next(err);
             else
@@ -19,7 +19,9 @@ module.exports = {
                 next(err);
             } else{
                 for (let user of users) {
-                    usersList.push({email: user.email, password: user.password});
+                    // usersList.push({email: user.email, password: user.password});
+                    usersList.push({ name: user.name, lastname: user.lastname, firstname: user.firstname, email: user.email, password: user.password});
+
                 }
                 res.json({status:"success", message: "user list found!!!", data:{users: usersList}});
 
