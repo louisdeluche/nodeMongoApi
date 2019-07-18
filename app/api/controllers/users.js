@@ -26,6 +26,16 @@ module.exports = {
             }
         });
     },
+    getById: function(req, res, next) {
+        console.log(req.body);
+        userModel.findById(req.params.userId, function(err, userInfo){
+            if (err) {
+                next(err);
+            } else {
+                res.json({status:"success", message: "User found!!!", data:{users: userInfo}});
+            }
+        });
+    },
     authenticate: function(req, res, next) {
         userModel.findOne({email:req.body.email}, function(err, userInfo){
             if (err) {
@@ -34,6 +44,8 @@ module.exports = {
                 if(bcrypt.compareSync(req.body.password, userInfo.password)) {
                     const token = jwt.sign({id: userInfo._id}, req.app.get('secretKey'), { expiresIn: '1h' });
                     res.json({status:"success", message: "user found!!!", data:{user: userInfo, token:token}});
+                    console.log(userInfo);
+                    console.log(token);
                 }else{
                     res.json({status:"error", message: "Invalid email/password!!!", data:null});
                 }

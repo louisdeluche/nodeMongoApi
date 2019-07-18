@@ -7,7 +7,6 @@ const mongoose = require('./config/database'); //database configuration
 var jwt = require('jsonwebtoken');
 const app = express();
 app.set('secretKey', 'nodeRestApi'); // jwt secret token
-
 app.use(function (req, res, next) {
 
     // Website you wish to allow to connect
@@ -29,30 +28,35 @@ app.use(function (req, res, next) {
 
 // connection to mongodb
 mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection error:'));
+app.use(express.json())
 app.use(logger('dev'));
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/', function(req, res){
     res.json({"tutorial" : "Build REST API with node.js"});
 });
 // public route
 app.use('/users', users);
 // private route
-app.use('/posts', validateUser, posts);
+// app.use('/posts', validateUser, posts);
+app.use('/posts', posts);
 app.get('/favicon.ico', function(req, res) {
     res.sendStatus(204);
 });
-function validateUser(req, res, next) {
-    jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
-        if (err) {
-            res.json({status:"error", message: err.message, data:null});
-        }else{
-            // add user id to request
-            req.body.userId = decoded.id;
-            next();
-        }
-    });
+// function validateUser(req, res, next) {
+//     jwt.verify(req.headers['x-access-token'], req.app.get('secretKey'), function(err, decoded) {
+//         if (err) {
+//             res.json({status:"error", message: err.message, data:null});
+//         }else{
+//             // add user id to request
+//             req.body.userId = decoded.id;
+//             next();
+//         }
+//     });
+//
+// }
 
-}
+
 // express doesn't consider not found 404 as an error so we need to handle 404 explicitly
 // handle 404 error
 app.use(function(req, res, next) {
