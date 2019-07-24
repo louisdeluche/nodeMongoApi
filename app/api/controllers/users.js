@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 module.exports = {
     create: function(req, res, next) {
 
-        userModel.create({ name: req.body.name, lastname: req.body.lastname, firstname: req.body.firstname, email: req.body.email, password: req.body.password }, function (err, result) {
+        userModel.create({ name: req.body.name, email: req.body.email, password: req.body.password }, function (err, result) {
             if (err)
                 next(err);
             else
@@ -20,7 +20,7 @@ module.exports = {
             } else{
                 for (let user of users) {
                     // usersList.push({email: user.email, password: user.password});
-                    usersList.push({ name: user.name, lastname: user.lastname, firstname: user.firstname, email: user.email, password: user.password});
+                    usersList.push({ name: user.name, email: user.email, password: user.password});
 
                 }
                 res.json({status:"success", message: "user list found!!!", data:{users: usersList}});
@@ -43,6 +43,9 @@ module.exports = {
             if (err) {
                 next(err);
             } else {
+                console.log(req.body.password);
+                console.log(userInfo);
+                console.log(req.body.email);
                 if(bcrypt.compareSync(req.body.password, userInfo.password)) {
                     const token = jwt.sign({id: userInfo._id}, req.app.get('secretKey'), { expiresIn: '1h' });
                     res.json({status:"success", message: "user found!!!", data:{user: userInfo, token:token}});

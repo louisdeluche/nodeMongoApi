@@ -1,4 +1,5 @@
 const articleModel = require('../models/articles');
+const userModel = require('../models/users');
 module.exports = {
     getById: function(req, res, next) {
         console.log(req.body);
@@ -17,10 +18,35 @@ module.exports = {
                 next(err);
             } else{
                 for (let article of articles) {
-                    articlesList.push({id: article._id, title: article.title, content: article.content, image: article.image});
+
+
+                    function operation(callback){ userModel.findById(article.user_id, function(err, userInfo){
+                        if (err) {
+                            console.log(err);
+                            next(err);
+                        } else {
+                            console.log(userInfo);
+                            if (userInfo != null){
+                                let autor = userInfo.name;
+                                callback(autor);
+                            }
+
+                        }
+                    })
                 }
-                // res.json({status:"success", message: "Articles list found!!!", data:{articles: articlesList}});
+
+                    operation(function(autor){
+                        articlesList.push({id: article._id, title: article.title, content: article.content, autor: autor});
+                    });
+
+
+
+                }
+                operation(function(autor){
+
                 res.json({articles: articlesList});
+                });
+
 
             }
         });
@@ -47,7 +73,7 @@ module.exports = {
         console.log(req.body);
         console.log(res.body);
         console.log(req.body.user_id);
-        articleModel.create({ title: req.body.title, content: req.body.content, user_id: req.body.user_id, image: req.body.image }, function (err, result) {
+        articleModel.create({ title: req.body.title, content: req.body.content, user_id: req.body.user_id, }, function (err, result) {
             if (err)
                 next(err);
             else
